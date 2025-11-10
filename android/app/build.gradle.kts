@@ -42,3 +42,9 @@ android {
 flutter {
     source = "../.."
 }
+android.applicationVariants.all {
+    outputs.all {
+        val newName = "weather.apk"
+        (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName = newName
+    }
+}

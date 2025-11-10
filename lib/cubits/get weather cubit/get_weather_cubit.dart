@@ -6,20 +6,31 @@ import 'package:weather_app/services/weather_services.dart';
 import '../../models/weather_model.dart';
 
 class GetWeatherCubit extends Cubit<WeatherStates> {
-  GetWeatherCubit() : super(GetNoWeatherStates());
+  GetWeatherCubit(this.weatherServices) : super(GetWeatherIntialStates());
+  WeatherServices weatherServices;
   WeatherModel? weatherModel;
-  getWeather({required String cityName}) async {
+  void getWeather({required String cityName}) async {
+    emit(GetWeatherLoadingStates());
     try {
-      weatherModel = await WeatherServices(
-        Dio(),
-      ).getCurrentWeather(cityName: cityName);
-      if (weatherModel != null) {
-        emit(GetWeatherSucessStates(weatherModel!));
-      } else {
-        emit(GetWeatherFailureStates('oops find some error'));
-      }
-    } on Exception catch (e) {
+      weatherModel = await weatherServices.getCurrentWeather(
+        cityName: cityName,
+      );
+      emit(GetWeatherSucessStates(weatherModel!));
+    } catch (e) {
       emit(GetWeatherFailureStates(e.toString()));
     }
+
+    // try {
+    //   weatherModel = await WeatherServices(
+    //     Dio(),
+    //   ).getCurrentWeather(cityName: cityName);
+    //   if (weatherModel != null) {
+    //     emit(GetWeatherSucessStates(weatherModel!));
+    //   } else {
+    //     emit(GetWeatherFailureStates('oops find some error'));
+    //   }
+    // } on Exception catch (e) {
+    //   emit(GetWeatherFailureStates(e.toString()));
+    // }
   }
 }
